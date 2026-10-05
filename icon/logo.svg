@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <!-- Main Icon Gradient -->
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <!-- Accent Gradient -->
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base Rounded Card (Squircle) -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGlow)" />
+
+  <!-- Outer Glowing Ring -->
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="none" stroke="url(#primaryGrad)" stroke-width="8" opacity="0.4" />
+
+  <g transform="translate(40, 20)">
+    <!-- Wallet / Pocket Base -->
+    <path d="M120 180 C120 150, 150 140, 216 140 L316 140 C382 140, 412 150, 412 180 L412 340 C412 380, 382 400, 316 400 L216 400 C150 400, 120 380, 120 340 Z" fill="none" stroke="url(#primaryGrad)" stroke-width="28" stroke-linejoin="round" />
+
+    <!-- Upward Flow Arrow (Pemasukan / Alokasi) -->
+    <path d="M200 310 L200 210 L160 250 M200 210 L240 250" fill="none" stroke="url(#accentGrad)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Downward Flow Arrow (Pengeluaran) -->
+    <path d="M330 210 L330 310 L290 270 M330 310 L370 270" fill="none" stroke="#ef4444" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+  </g>
+</svg>

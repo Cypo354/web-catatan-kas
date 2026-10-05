@@ -13,6 +13,7 @@ const ASSETS_TO_CACHE = [
   './app-analytics.js',
   './app-settings.js',
   './manifest.json',
+  './icon/logo.svg',
   'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
