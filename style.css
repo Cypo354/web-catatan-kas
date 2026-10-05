@@ -1,0 +1,227 @@
+:root{
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #1f2937;
+    padding-bottom: 80px;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px
+}
+
+h2 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    color: var(--text-man);
+}
+
+h3 {
+    font-size: 1rem;
+    margin: 18px 0 10px 0;
+    color: var(--text-main);
+}
+
+/* 
+=============================================================
+KOMPONEN CARD & MAIN SALDO
+=============================================================
+*/
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px;
+    box-shadow: var(--shadow);
+}
+
+.main-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #ffffff;
+    border: none;
+}
+
+.main-card small {
+    color: #93c5fd;
+    font-size: 0.85rem;
+}
+
+.main-card h1{
+    font-size: 1.8rem;
+    margin-top: 4px;
+}
+
+/* 
+==================================================
+GRID KANTONG / KATEGORI KAS
+==================================================
+*/
+
+.kantong-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;;
+}
+
+.card-kantong {
+    background: var(--card-bg);
+    padding: 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.card-kantong small {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-kantong h4{
+    color: var(--primary-color);
+    font: 1rem;
+    margin-top: 4px;
+}
+
+/* 
+============================================
+FORM INPUT & ELEMEN KONTROL
+============================================
+ */
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2;
+}
+
+button[type="submit"]:active {
+    background-color: var(--primary-dark);
+}
+
+/* 
+==============================================
+LIST RIWAYAT $ PENGATURAN KATEGORI
+==============================================
+*/
+
+.transaksi-ul, .setting-kat-ul {
+    list-style: none;
+}
+
+.transaksi-ul li {
+    display: flex;
+    justify-content: space-between;
+    align-item: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.transaksi-ul li:last-child {
+    border-bottom: none;
+}
+
+.setting-kat-ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.btn-del {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+/* 
+================================================
+BOTTOM NAVIGATION BAR (FIXED NAV)
+================================================
+*/
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.nav-btn span {
+    margin-top: 2px;
+}
+
+.nav-btn.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}

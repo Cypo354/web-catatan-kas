@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catatan Kas</title>
+  <link rel="stylesheet" href="style.css"> <!-- sesuaikan nama CSS kamu jika ada -->
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+  <h1>Catatan Kas</h1>
+  <div id="storage-status" style="font-size: 12px; color: #64748b; margin-bottom: 12px;">
+    Status Storage: Memuat.......
+  </div>
+
+  <!-- Kartu Total Saldo -->
+  <div class="card-total" style="background: #2563eb; color: white; padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+    <small>Total Kas</small>
+    <h2 id="total-saldo" style="margin: 4px 0 0 0;">Rp 0</h2>
+  </div>
+
+  <!-- Ringkasan Kantong Kas -->
+  <h3>Ringkasan Kantong</h3>
+  <div id="kantong-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px;">
+    <!-- Kartu kantong akan dirender oleh app-index.js di sini -->
+  </div>
+
+  <!-- Form Tambah Transaksi -->
+  <div class="card-form" style="border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px;">
+    <h3>Tambah Transaksi</h3>
+
+    <!-- Gunakan SATU Form Utama -->
+    <form id="form-transaksi">
+      
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Tipe Transaksi</label>
+        <select id="tipe-transaksi" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+          <option value="pemasukan">Pemasukan (+)</option>
+          <option value="pengeluaran" selected>Pengeluaran (-)</option>
+        </select>
+      </div>
+
+      <!-- wadah ELEMEN DROPDOWN KANTONG (PENTING!) -->
+      <div id="wrapper-select-kategori" style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Pilih Kantong Kas</label>
+        <select id="select-kategori" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+          <option value="">-- Pilih Kantong Kas --</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Deskripsi</label>
+        <input type="text" id="ket-transaksi" placeholder="Contoh: Gaji/Belanja" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Nominal</label>
+        <input type="number" id="jumlah-transaksi" placeholder="0" min="0" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+      </div>
+
+      <button type="submit" style="width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+        Simpan Transaksi
+      </button>
+
+    </form>
+  </div>
+
+  <!-- Navigasi Bawah -->
+  <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn active">Home</a>
+        <a href="analytics.html" class="nav-btn">Riwayat</a>
+        <a href="settings.html" class="nav-btn">Setting</a>
+    </nav>
+
+  <!-- PEMANGGILAN SCRIPT WAJIB URUT -->
+  <script src="storage.js"></script>
+  <script src="app-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    
+<header class="app-header">
+    <h1>Pengaturan</h1>
+</header>    
+<div class="app-container">
+    <!-- Kartu Status Total Persentase -->
+    <div class="card">
+        <h3>Total Alokasi Saat Ini</h3>
+        <h1 id="total-persen" style="color: var(--pimary-color, #2563eb)">0%</h1>
+        <small id="status-persen" style="color: #64748b">Total alokasi harus genap 100</small>
+    </div>
+
+    <div class="card" stye="margin-top: 16px;">
+        <h3>Tambah Kantong Baru</h3>
+        <form action="" id="form-kategori" style="margin-top: 12px">
+            <div class="form-group">
+                <label for="nama-ategori">Nama Kantong:</label>
+                <input type="text" id="nama-kategori" placeholder="Contoh: Investasi / Dana Darurat" required>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+                <label for="persen-kategori">Persentase Alokasi (%)</label>
+                <input type="number" id="persen-kategori" placeholder="10" min="1" max="100" required>
+            </div>
+            <button type="submit" style="margin-top: 12px; width: 100%;">Tambah Kantong</button>
+        </form>
+    </div>
+
+    <div class="card" style="margin-top: 16px">
+        <h3>Daftar Kantong Kas</h3>
+        <ul id="kategori-list" style="list-style: none; padding: 0; margin-top: 12px;"></ul>
+        <button id="btn-simpan-persen" atyle="margin-top: 16px; width: 100%; background-color: #10b981;">Simpan Perubahan Alokasi</button>
+    </div>
+
+    <dic class="card" style="margin-top: 16px">
+        <h3>Backup & Restore Data</h3>
+
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
+            Cadangkan file JJSON kamu ke penyimpanan lokal atau pulihan data dari file cadangan sebelumnya
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Tombol export / backup -->
+             <button id="btn-export-json" style="background-color: #2563eb; width: 100%;">
+                Export / Unduh Backup (JSON)
+             </button>
+
+            <!-- Form Import Data dari File JSON -->
+            <div style="border-top: 1px dashed #cbd5e1; padding-top: 12px; margin-top: 4px;">
+                <label for="input-impoert-file" style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 6px;">
+                    Restore Data dari file JSON:
+                </label>
+                <input type="file" id="input-import-file" accept=".json" style="width: 100%; font-size: 13px; margin-bottom: 8px;">
+                <button id="btn-import-json" style="background-color: #f59e0b; width: 100%;">
+                    Restore Data
+                </button>
+            </div> 
+        </div>
+    </dic>
+</div>
+
+<nav class="bottom-nav">
+        <a href="index.html" class="nav-btn active">Home</a>
+        <a href="analytics.html" class="nav-btn">Riwayat</a>
+        <a href="settings.html" class="nav-btn">Setting</a>
+</nav>
+
+<script src="storage.js"></script>
+<script src="app-settings.js"></script>
+</body>
+</html>

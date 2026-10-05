@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catat Kas - Grafik & Riwayat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <h2>Grafik Riwayat Kas</h2>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h4>Komposisi Saldo Kantong</h4>
+            <canvas id="chart-kantong" style="max-height: 220px;"></canvas>
+
+            <div id="peringatan-defisit" style="display: none; margin-top: 15;"></div>
+
+            <div id="legenda-kantong" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px;"></div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3>Tren Pemasukan & Pengeluaran</h3>
+            <canvas id="chart-history" width="400" height="200"></canvas>
+        </div>
+
+        <div id="peringatan-defisit" style="display: none;"></div>
+
+        <h3>Daftar Riwayat Transaksi</h3>
+        <ul id="transaksi-list" class="transaksi-ul"></ul>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-btn active">Home</a>
+        <a href="analytics.html" class="nav-btn">Riwayat</a>
+        <a href="settings.html" class="nav-btn">Setting</a>
+    </nav>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="storage.js"></script>
+    <script src="app-analytics.js"></script>
+</body>
+</html>
