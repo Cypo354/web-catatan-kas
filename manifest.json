@@ -3,7 +3,7 @@
   "name": "Catatan Aliran Kas PWA",
   "icons": [
     {
-      "src": "./icon/logo.svg",
+      "src": "icon/logo.svg",
       "type": "image/svg+xml",
       "sizes": "any",
       "purpose": "any maskable"
