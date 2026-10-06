@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'catatan-kas-v4';
+const CACHE_NAME = 'catatan-kas-v2';
 
 // Gunakan path relatif (tanpa garis miring diawal '/') agar cocok di Vercel
 const ASSETS_TO_CACHE = [

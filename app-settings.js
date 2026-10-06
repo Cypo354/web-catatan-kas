@@ -89,15 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = URL.createObjectURL(blob);
 
         // Triger download otomatis via elemen <a> semu
-        const a = documentcreateelement('a');
-        a.haref = url;
+        const a = document.createElement('a');
+        a.href = url;
         a.download = namaFile;
         document.body.appendChild(a);
         a.click();
 
         // Bersihkan DOM
         document.body.removeChild(a);
-        URLrevokeObjectURL(url);
+        URL.revokeObjectURL(url);
       });
     }
 
