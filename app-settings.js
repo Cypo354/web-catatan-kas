@@ -118,12 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const reader = new FileReader();
 
-        reader.onLoad = async (e) => {
+        reader.onload = async (e) => {
           try {
             const parsedData = JSON.parse(e.target.result);
 
             // Validasi sederhana struktur data JSON
-            if (!parsedData || !Array.isArray(parsedData.kategori) || !Array.isArray(parsedData.tansaksi)) {
+            if (!parsedData || !Array.isArray(parsedData.kategori) || !Array.isArray(parsedData.transaksi)) {
               return alert('Format file JASON tidak valid! pastikan file memuat data kategori dan transaksi.');
             }
 
