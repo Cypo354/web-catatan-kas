@@ -3,7 +3,7 @@
 let instanceChartKantong = null;
 let instanceChartHistory = null;
 
-// 1. HITUNG SALDO DINAMIS
+// 1. HITUNG SALDO DINAMIS PER KANTONG
 function hitungSaldoPerKantong(db) {
   const saldoMap = {};
   const daftarKategori = Array.isArray(db?.kategori) ? db.kategori : [];
@@ -36,10 +36,7 @@ function hitungSaldoPerKantong(db) {
   return saldoMap;
 }
 
-// 2. RENDER DAFTAR TRANSAKSI
-// app-analytics.js
-
-// 1. RENDER DAFTAR RIWAYAT TRANSAKSI (+ TOMBOL HAPUS)
+// 2. RENDER DAFTAR RIWAYAT TRANSAKSI (+ TOMBOL HAPUS)
 function renderDaftarRiwayat(db) {
   const ulEl = document.getElementById('transaksi-list');
   if (!ulEl) return;
@@ -51,7 +48,7 @@ function renderDaftarRiwayat(db) {
   });
 
   if (daftarTransaksi.length === 0) {
-    ulEl.innerHTML = '<li style="text-align: center; color: #94a3b8; padding: 15px; list-style: none;">Belum ada riwayat transaksi.</li>';
+    ulEl.innerHTML = '<li style="text-align: center; color: var(--text-muted); padding: 15px; list-style: none;">Belum ada riwayat transaksi.</li>';
     return;
   }
 
@@ -59,7 +56,7 @@ function renderDaftarRiwayat(db) {
 
   daftarTransaksi.forEach(t => {
     const isPemasukan = t.tipe === 'pemasukan';
-    const warnaNominal = isPemasukan ? '#10b981' : '#ef4444';
+    const warnaNominal = isPemasukan ? 'var(--success-color)' : 'var(--danger-color)';
     const tanda = isPemasukan ? '+' : '-';
     
     const namaKantong = isPemasukan 
@@ -67,20 +64,18 @@ function renderDaftarRiwayat(db) {
       : (mapKategori[String(t.kategoriId)] || 'Kantong Dihapus');
 
     const li = document.createElement('li');
-    li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e2e8f0; list-style: none;';
     
     li.innerHTML = `
       <div>
-        <strong style="display: block; font-size: 14px; color: #1e293b;">${t.deskripsi || (isPemasukan ? 'Pemasukan' : 'Pengeluaran')}</strong>
-        <small style="color: #64748b; font-size: 11px;">${t.tanggal || ''} • <span style="color:#2563eb; font-weight: 500;">${namaKantong}</span></small>
+        <strong style="display: block; font-size: 14px; color: var(--text-main);">${t.deskripsi || (isPemasukan ? 'Pemasukan' : 'Pengeluaran')}</strong>
+        <small style="color: var(--text-muted); font-size: 11px;">${t.tanggal || ''} • <span style="color: var(--primary-color); font-weight: 500;">${namaKantong}</span></small>
       </div>
       <div style="display: flex; align-items: center; gap: 12px;">
         <span style="font-weight: bold; color: ${warnaNominal}; font-size: 14px;">
           ${tanda} Rp ${Number(t.jumlah).toLocaleString('id-ID')}
         </span>
-        <!-- TOMBOL HAPUS TRANSAKSI -->
-        <button onclick="hapusTransaksi('${t.id}')" style="background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; padding: 2px 6px;" title="Hapus Transaksi">
-          X
+        <button onclick="hapusTransaksi('${t.id}')" class="btn-del" title="Hapus Transaksi">
+          ✕
         </button>
       </div>
     `;
@@ -89,27 +84,28 @@ function renderDaftarRiwayat(db) {
   });
 }
 
-// 2. FUNGSI GLOBAL HAPUS TRANSAKSI
+// 3. FUNGSI GLOBAL HAPUS TRANSAKSI
 window.hapusTransaksi = async function(id) {
   if (confirm('Yakin ingin menghapus riwayat transaksi ini?')) {
     const db = await bacaData();
-    // Filter out transaksi berdasarkan ID
     db.transaksi = (db.transaksi || []).filter(t => String(t.id) !== String(id));
     
-    // Tulis ulang ke OPFS
     await tulisData(db);
     
-    // Render ulang UI Analytics
+    if (typeof showToast === 'function') {
+      showToast('Transaksi berhasil dihapus', 'info');
+    }
+    
     await initAnalytics();
   }
 };
 
-// 3. RENDER CHART
+// 4. RENDER CHART (DONUT & LINE CHART)
 function renderCharts(db, saldoMap) {
   const daftarKategori = Array.isArray(db?.kategori) ? db.kategori : [];
   const daftarTransaksi = Array.isArray(db?.transaksi) ? db.transaksi : [];
 
-  // A. Donut Chart
+  // A. DONUT CHART (KOMPOSISI SALDO)
   const canvasKantong = document.getElementById('chart-kantong');
   const legendaEl = document.getElementById('legenda-kantong');
 
@@ -127,7 +123,7 @@ function renderCharts(db, saldoMap) {
 
       if (legendaEl) {
         const color = colors[idx % colors.length];
-        const warnaSaldo = saldo < 0 ? '#ef4444' : '#1e293b';
+        const warnaSaldo = saldo < 0 ? 'var(--danger-color)' : 'var(--text-main)';
         
         const itemLegenda = document.createElement('div');
         itemLegenda.style.cssText = 'display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500;';
@@ -158,100 +154,91 @@ function renderCharts(db, saldoMap) {
     });
   }
 
-  // B. Bar Chart
-  // app-analytics.js
+  // B. LINE CHART (HISTORIS PEMASUKAN & PENGELUARAN)
+  const canvasHistory = document.getElementById('chart-history');
+  if (canvasHistory && typeof window.Chart !== 'undefined') {
+    const petaTanggal = {};
+    const transaksiUrut = [...daftarTransaksi].sort((a, b) => a.id - b.id);
 
-// --- B. GRAFIK TREN HISTORIS PEMASUKAN & PENGELUARAN (LINE CHART) ---
-const canvasHistory = document.getElementById('chart-history');
-if (canvasHistory && typeof window.Chart !== 'undefined') {
-  const daftarTransaksi = Array.isArray(db?.transaksi) ? db.transaksi : [];
+    transaksiUrut.forEach(t => {
+      const tgl = t.tanggal || 'Tanpa Tanggal';
+      if (!petaTanggal[tgl]) {
+        petaTanggal[tgl] = { masukan: 0, keluaran: 0 };
+      }
+      
+      const nominal = Number(t.jumlah) || 0;
+      if (t.tipe === 'pemasukan') {
+        petaTanggal[tgl].masukan += nominal;
+      } else if (t.tipe === 'pengeluaran') {
+        petaTanggal[tgl].keluaran += nominal;
+      }
+    });
 
-  // 1. Kelompokkan Nominal Pemasukan & Pengeluaran Berdasarkan Tanggal
-  const petaTanggal = {};
+    const labelsTanggal = Object.keys(petaTanggal);
+    const dataPemasukan = labelsTanggal.map(tgl => petaTanggal[tgl].masukan);
+    const dataPengeluaran = labelsTanggal.map(tgl => petaTanggal[tgl].keluaran);
 
-  // Urutkan transaksi berdasarkan ID/Waktu (Kronologis dari lama ke baru)
-  const transaksiUrut = [...daftarTransaksi].sort((a, b) => a.id - b.id);
+    if (instanceChartHistory) instanceChartHistory.destroy();
 
-  transaksiUrut.forEach(t => {
-    const tgl = t.tanggal || 'Tanpa Tanggal';
-    if (!petaTanggal[tgl]) {
-      petaTanggal[tgl] = { masukan: 0, keluaran: 0 };
-    }
-    
-    const nominal = Number(t.jumlah) || 0;
-    if (t.tipe === 'pemasukan') {
-      petaTanggal[tgl].masukan += nominal;
-    } else if (t.tipe === 'pengeluaran') {
-      petaTanggal[tgl].keluaran += nominal;
-    }
-  });
-
-  // 2. Ekstrak Label Tanggal dan Data Array untuk Chart.js
-  const labelsTanggal = Object.keys(petaTanggal);
-  const dataPemasukan = labelsTanggal.map(tgl => petaTanggal[tgl].masukan);
-  const dataPengeluaran = labelsTanggal.map(tgl => petaTanggal[tgl].keluaran);
-
-  if (instanceChartHistory) instanceChartHistory.destroy();
-
-  // 3. Render Line Chart
-  instanceChartHistory = new Chart(canvasHistory, {
-    type: 'line',
-    data: {
-      labels: labelsTanggal.length > 0 ? labelsTanggal : ['Belum Ada Data'],
-      datasets: [
-        {
-          label: 'Pemasukan (+)',
-          data: dataPemasukan.length > 0 ? dataPemasukan : [0],
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          fill: true,
-          tension: 0.3, // Efek kurva halus pada garis
-          pointRadius: 4,
-          pointBackgroundColor: '#10b981'
-        },
-        {
-          label: 'Pengeluaran (-)',
-          data: dataPengeluaran.length > 0 ? dataPengeluaran : [0],
-          borderColor: '#ef4444',
-          backgroundColor: 'rgba(239, 68, 68, 0.1)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 4,
-          pointBackgroundColor: '#ef4444'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: true, // Tampilkan legenda agar pengguna tahu garis hijau vs merah
-          position: 'top'
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.dataset.label}: Rp ${context.parsed.y.toLocaleString('id-ID')}`;
+    instanceChartHistory = new Chart(canvasHistory, {
+      type: 'line',
+      data: {
+        labels: labelsTanggal.length > 0 ? labelsTanggal : ['Belum Ada Data'],
+        datasets: [
+          {
+            label: 'Pemasukan (+)',
+            data: dataPemasukan.length > 0 ? dataPemasukan : [0],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: '#10b981'
+          },
+          {
+            label: 'Pengeluaran (-)',
+            data: dataPengeluaran.length > 0 ? dataPengeluaran : [0],
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: '#ef4444'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: Rp ${context.parsed.y.toLocaleString('id-ID')}`;
+              }
             }
           }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) {
-              return 'Rp ' + value.toLocaleString('id-ID');
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return 'Rp ' + value.toLocaleString('id-ID');
+              }
             }
           }
         }
       }
-    }
-  });
-}
+    });
+  }
 }
 
-// 4. EKSKUSI UTAMA
+// 5. EKSEKUSI UTAMA
 async function initAnalytics() {
   try {
     const db = await bacaData();
@@ -284,7 +271,7 @@ async function initAnalytics() {
   }
 }
 
-// Jalankan fungsi eksekusi langsung
+// Inisialisasi
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initAnalytics);
 } else {

@@ -79,18 +79,16 @@ async function renderIndexUI() {
     daftarKategori.forEach(k => {
       const saldo = saldoMap[String(k.id)] || 0;
       totalSemua += saldo;
-      const warnaSaldo = saldo < 0 ? '#ef4444' : '#10b981';
+      const warnaSaldo = saldo < 0 ? 'var(--danger-color)' : 'var(--success-color)';
 
       const card = document.createElement('div');
-      card.style.cssText = 'padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; display: flex; justify-content: space-between; align-items: center;';
+      card.className = 'card-kantong';
       
       card.innerHTML = `
-        <div>
-          <strong>${k.nama}</strong> <br><small style="color: #64748b;">(${k.persen}%)</small>
-        </div>
-        <div style="font-weight: bold; color: ${warnaSaldo};">
+        <small>${k.nama} (${k.persen}%)</small>
+        <h4 style="color: ${warnaSaldo};">
           Rp ${Math.round(saldo).toLocaleString('id-ID')}
-        </div>
+        </h4>
       `;
       listKantongEl.appendChild(card);
     });
@@ -106,7 +104,6 @@ async function renderIndexUI() {
 
 // 5. INISIALISASI & HANDLER SUBMIT
 document.addEventListener('DOMContentLoaded', async () => {
-  // Cek Status Persisten HP jika fungsinya ada di storage.js
   if (typeof cekStatusStorage === 'function') {
     await cekStatusStorage();
   }
@@ -128,12 +125,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tipe = document.getElementById('tipe-transaksi').value;
       const kategoriId = document.getElementById('select-kategori').value;
       const deskripsi = document.getElementById('ket-transaksi').value.trim();
-      const jumlah = Number(document.getElementById('jumlah-transaksi').value) || 0;
+      const jumlahInput = document.getElementById('jumlah-transaksi').value;
+      
+      // Ambil angka murni jika disisipi titik format
+      const jumlah = Number(jumlahInput.replace(/\D/g, '')) || 0;
 
-      if (jumlah <= 0) return alert('Nominal harus lebih besar dari 0!');
+      if (jumlah <= 0) {
+        return typeof showToast === 'function' 
+          ? showToast('Nominal harus lebih besar dari 0!', 'error')
+          : alert('Nominal harus lebih besar dari 0!');
+      }
 
       if (tipe === 'pengeluaran' && !kategoriId) {
-        return alert('Pilih kantong kas pengeluaran terlebih dahulu!');
+        return typeof showToast === 'function' 
+          ? showToast('Pilih kantong kas pengeluaran terlebih dahulu!', 'info')
+          : alert('Pilih kantong kas pengeluaran terlebih dahulu!');
       }
 
       const db = await bacaData();
@@ -159,7 +165,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('ket-transaksi').value = '';
 
       await renderIndexUI();
-      alert('Transaksi berhasil disimpan!');
+
+      // Notifikasi Toast
+      if (typeof showToast === 'function') {
+        showToast('Transaksi berhasil disimpan!', 'success');
+      } else {
+        alert('Transaksi berhasil disimpan!');
+      }
     });
   }
 });

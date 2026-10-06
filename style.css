@@ -1,4 +1,4 @@
-:root{
+:root {
     --primary-color: #2563eb;
     --primary-dark: #1d4ed8;
     --bg-color: #f8fafc;
@@ -20,21 +20,22 @@
 }
 
 body {
-    background-color: #ffffff;
-    color: #1f2937;
+    background-color: var(--bg-color);
+    color: var(--text-main);
     padding-bottom: 80px;
 }
 
 .container {
     max-width: 480px;
     margin: 0 auto;
-    padding: 16px
+    padding: 16px;
 }
 
+/* PERBAIKAN TYPO: var(--text-man) -> var(--text-main) */
 h2 {
     font-size: 1.25rem;
     margin-bottom: 12px;
-    color: var(--text-man);
+    color: var(--text-main);
 }
 
 h3 {
@@ -49,12 +50,13 @@ KOMPONEN CARD & MAIN SALDO
 =============================================================
 */
 
+/* PERBAIKAN: border: 1px -> border: 1px solid var(--border-color) */
 .card {
     background: var(--card-bg);
     border-radius: var(--radius);
     padding: 16px;
     margin-bottom: 16px;
-    border: 1px;
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
 }
 
@@ -69,7 +71,7 @@ KOMPONEN CARD & MAIN SALDO
     font-size: 0.85rem;
 }
 
-.main-card h1{
+.main-card h1 {
     font-size: 1.8rem;
     margin-top: 4px;
 }
@@ -84,7 +86,7 @@ GRID KANTONG / KATEGORI KAS
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 16px;;
+    margin-bottom: 16px;
 }
 
 .card-kantong {
@@ -104,9 +106,10 @@ GRID KANTONG / KATEGORI KAS
     text-overflow: ellipsis;
 }
 
-.card-kantong h4{
+/* PERBAIKAN: font: 1rem -> font-size: 1rem */
+.card-kantong h4 {
     color: var(--primary-color);
-    font: 1rem;
+    font-size: 1rem;
     margin-top: 4px;
 }
 
@@ -116,7 +119,7 @@ FORM INPUT & ELEMEN KONTROL
 ============================================
  */
 
-form{
+form {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -135,28 +138,46 @@ input, select, button {
     border: 1px solid var(--border-color);
     font-size: 0.9rem;
     outline: none;
+    background: #ffffff;
 }
 
 input:focus, select:focus {
     border-color: var(--primary-color);
 }
 
-button[type="submit"] {
+/* PERBAIKAN TYPO: transition: background 0.2s */
+button[type="submit"], .btn-primary {
     background-color: var(--primary-color);
     color: white;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.2;
+    transition: transform 0.1s ease, background 0.2s ease;
 }
 
-button[type="submit"]:active {
+button[type="submit"]:active, .btn-primary:active {
     background-color: var(--primary-dark);
+    transform: scale(0.98);
+}
+
+/* Varian Tombol Tambahan untuk Setting / Backup / Restore */
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.btn-success:active {
+    opacity: 0.9;
+    transform: scale(0.98);
 }
 
 /* 
 ==============================================
-LIST RIWAYAT $ PENGATURAN KATEGORI
+LIST RIWAYAT & PENGATURAN KATEGORI
 ==============================================
 */
 
@@ -164,10 +185,11 @@ LIST RIWAYAT $ PENGATURAN KATEGORI
     list-style: none;
 }
 
+/* PERBAIKAN TYPO: align-item -> align-items */
 .transaksi-ul li {
     display: flex;
     justify-content: space-between;
-    align-item: center;
+    align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid var(--border-color);
 }
@@ -194,7 +216,52 @@ LIST RIWAYAT $ PENGATURAN KATEGORI
     font-size: 1.1rem;
     cursor: pointer;
     padding: 4px 8px;
+    width: auto;
 }
+
+/* 
+================================================
+CUSTOM TOAST NOTIFICATION (POPUP MELAYANG)
+================================================
+*/
+#toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.toast {
+    min-width: 280px;
+    max-width: 90vw;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: #1e293b;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.toast-success { border-left: 4px solid var(--success-color); }
+.toast-error { border-left: 4px solid var(--danger-color); }
+.toast-info { border-left: 4px solid var(--primary-color); }
 
 /* 
 ================================================
@@ -215,6 +282,15 @@ BOTTOM NAVIGATION BAR (FIXED NAV)
     z-index: 1000;
     max-width: 480px;
     margin: 0 auto;
+}
+
+.nav-btn {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .nav-btn span {

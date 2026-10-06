@@ -78,6 +78,33 @@ async function tulisData(db) {
   }
 }
 
+// Helper Toast Notification Kustom
+function showToast(message, type = 'success') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+
+  container.appendChild(toast);
+
+  // Animasi Masuk
+  setTimeout(() => toast.classList.add('show'), 10);
+
+  // Hilang Otomatis setelah 3 detik
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(() => {

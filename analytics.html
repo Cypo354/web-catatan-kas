@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,32 +10,42 @@
 </head>
 <body>
     <div class="container">
-        <h2>Grafik Riwayat Kas</h2>
+        <h2>Grafik & Riwayat Kas</h2>
 
-        <div class="card" style="margin-bottom: 20px;">
-            <h4>Komposisi Saldo Kantong</h4>
-            <canvas id="chart-kantong" style="max-height: 220px;"></canvas>
+        <!-- Card 1: Donut Chart Komposisi Saldo -->
+        <div class="card">
+            <h3>Komposisi Saldo Kantong</h3>
+            <div style="position: relative; height: 220px; width: 100%;">
+                <canvas id="chart-kantong"></canvas>
+            </div>
 
-            <div id="peringatan-defisit" style="display: none; margin-top: 15;"></div>
+            <!-- Wadah Peringatan Defisit (Cukup Satu Saja) -->
+            <div id="peringatan-defisit" style="display: none; margin-top: 15px;"></div>
 
+            <!-- Legenda Kantong -->
             <div id="legenda-kantong" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px;"></div>
         </div>
 
-        <div class="card" style="margin-bottom: 20px;">
+        <!-- Card 2: Line Chart Tren Historis -->
+        <div class="card">
             <h3>Tren Pemasukan & Pengeluaran</h3>
-            <canvas id="chart-history" width="400" height="200"></canvas>
+            <div style="position: relative; height: 220px; width: 100%;">
+                <canvas id="chart-history"></canvas>
+            </div>
         </div>
 
-        <div id="peringatan-defisit" style="display: none;"></div>
-
-        <h3>Daftar Riwayat Transaksi</h3>
-        <ul id="transaksi-list" class="transaksi-ul"></ul>
+        <!-- Card 3: Daftar Riwayat Transaksi -->
+        <div class="card">
+            <h3>Daftar Riwayat Transaksi</h3>
+            <ul id="transaksi-list" class="transaksi-ul"></ul>
+        </div>
     </div>
 
+    <!-- Navigasi Bawah -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-btn active">Home</a>
-        <a href="analytics.html" class="nav-btn">Riwayat</a>
-        <a href="settings.html" class="nav-btn">Setting</a>
+        <a href="index.html" class="nav-btn"><span>Home</span></a>
+        <a href="analytics.html" class="nav-btn active"><span>Riwayat</span></a>
+        <a href="settings.html" class="nav-btn"><span>Setting</span></a>
     </nav>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

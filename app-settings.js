@@ -73,82 +73,80 @@ document.addEventListener('DOMContentLoaded', () => {
         persenInput.value = '';
         await renderSettingsUI();
       });
-    // Export Data
+    // --- EXPORT / BACKUP JSON ---
     const btnExport = document.getElementById('btn-export-json');
     if (btnExport) {
-      btnExport.addEventListener('click', async() => {
-        const db = await bacaData();
+      btnExport.addEventListener('click', async () => {
+        try {
+          const db = await bacaData();
+          const tgl = new Date().toISOString().split('T')[0];
+          const namaFile = `backup_keuangan_${tgl}.json`;
 
-        // Format nama file cadangan dengan tanggal hari ini
-        const tgl = new Date().toISOString().split('T')[0];
-        const namaFile = `backup_keuangan_${tgl}.json`;
+          const jsonStr = JSON.stringify(db, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
 
-        // Ubah data JSON ke Blob Object
-        const jsonStr = JSON.stringify(db, null, 2);
-        const blob = new Blob([jsonStr], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = namaFile;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
 
-        // Triger download otomatis via elemen <a> semu
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = namaFile;
-        document.body.appendChild(a);
-        a.click();
-
-        // Bersihkan DOM
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+          // Gunakan Toast sebagai pengganti alert
+          showToast('File backup berhasil diunduh!', 'success');
+        } catch (err) {
+          console.error(err);
+          showToast('Gagal mengunduh file backup.', 'error');
+        }
       });
     }
 
-    // Import Data
+    // --- IMPORT / RESTORE JSON ---
     const btnImport = document.getElementById('btn-import-json');
     const fileInput = document.getElementById('input-import-file');
 
     if (btnImport && fileInput) {
       btnImport.addEventListener('click', async () => {
-        // 1. Cek apakah pengguna sudah memilih file di <input type="file">
         const file = fileInput.files[0];
 
         if (!file) {
-          return alert('Silakan pilih file backup (.json) terlebih dahulu!');
+          return showToast('Pilih file backup (.json) terlebih dahulu!', 'info');
         }
 
-        // 2. Konfirmasi sebelum menimpa data
-        if (!confirm('PERHATIAN: Mengembalikan data dari file backup akan menimpa seluruh data kas & transaksi yang ada saat ini. Lanjutkan?')) {
+        if (!confirm('PERHATIAN: Mengembalikan data dari file backup akan menimpa seluruh data kas saat ini. Lanjutkan?')) {
           return;
         }
 
         const reader = new FileReader();
 
-        // 3. Eksekusi restore saat reader membaca file (onload menggunakan 'l' kecil)
         reader.onload = async (e) => {
           try {
             const parsedData = JSON.parse(e.target.result);
 
-            // Validasi struktur JSON (transaksi dengan huruf 'r')
             if (!parsedData || !Array.isArray(parsedData.kategori) || !Array.isArray(parsedData.transaksi)) {
-              return alert('Format file JSON tidak valid! Pastikan file memuat data kategori dan transaksi.');
+              return showToast('Format JSON tidak valid!', 'error');
             }
 
-            // Tulis data baru ke OPFS/Storage
             await tulisData(parsedData);
-            alert('✅ Data berhasil dipulihkan!');
+            showToast('Data kas berhasil dipulihkan!', 'success');
 
-            fileInput.value = ''; // Reset input file setelah sukses
-            
-            if (typeof renderSettingsUI === 'function') {
-              await renderSettingsUI();
-            } else {
-              window.location.reload();
-            }
+            fileInput.value = '';
+            setTimeout(() => {
+              if (typeof renderSettingsUI === 'function') {
+                renderSettingsUI();
+              } else {
+                window.location.reload();
+              }
+            }, 1200);
+
           } catch (err) {
-            console.error('Gagal membaca JSON: ', err);
-            alert('Gagal memproses file. Pastikan file berupa JSON yang valid.');
+            console.error(err);
+            showToast('File yang dipilih rusak/bukan JSON valid.', 'error');
           }
         };
 
-        // Mulai membaca file
         reader.readAsText(file);
       });
     }
