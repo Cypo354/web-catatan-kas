@@ -106,36 +106,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('input-import-file');
 
     if (btnImport && fileInput) {
-      btnImport.addEventListener('click', async () => {
-        const file = fileInput.files[0];
+      // 1. Klik tombol Restore langsung membuka dialog pilih file
+      btnImport.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      // 2. Proses pembacaan file berjalan otomatis saat file selesai dipilih
+      fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
 
         if (!file) {
-          return alert('Dilahkan pilih file backup (.json) terlebih dahulu!');
+          return alert('Silakan pilih file backup (.json) terlebih dahulu!');
         }
-        if (!confirm('PERHATIAN: Mengambalikan data dari file backup akan menimpa seuruh data kas & transaksi yang ada saat ini. Lanjutkan>')) {
-        return;
+
+        if (!confirm('PERHATIAN: Mengembalikan data dari file backup akan menimpa seluruh data kas & transaksi yang ada saat ini. Lanjutkan?')) {
+          fileInput.value = ''; // Reset jika dibatalkan
+          return;
         }
 
         const reader = new FileReader();
 
+        // PERBAIKAN 1: reader.onload (menggunakan 'l' kecil)
         reader.onload = async (e) => {
           try {
             const parsedData = JSON.parse(e.target.result);
 
-            // Validasi sederhana struktur data JSON
+            // PERBAIKAN 2: parsedData.transaksi (dengan huruf 'r')
             if (!parsedData || !Array.isArray(parsedData.kategori) || !Array.isArray(parsedData.transaksi)) {
-              return alert('Format file JASON tidak valid! pastikan file memuat data kategori dan transaksi.');
+              return alert('Format file JSON tidak valid! Pastikan file memuat data kategori dan transaksi.');
             }
 
             // Tulis data baru ke OPFS
             await tulisData(parsedData);
-            alert('Data berhasil dipulihkan!');
+            alert('✅ Data berhasil dipulihkan!');
 
             fileInput.value = ''; // Reset input file
-            await renderSettingsUI(); 
+            
+            if (typeof renderSettingsUI === 'function') {
+              await renderSettingsUI();
+            } else {
+              window.location.reload(); // Fallback reload jika fungsi renderSettingsUI tidak ada
+            }
           } catch (err) {
             console.error('Gagal membaca JSON: ', err);
-            alert('Gagal memroses file. Pastikan file berupa JSON yang valid.');
+            alert('Gagal memproses file. Pastikan file berupa JSON yang valid.');
+            fileInput.value = '';
           }
         };
 
